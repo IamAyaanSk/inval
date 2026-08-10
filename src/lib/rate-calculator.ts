@@ -4,19 +4,14 @@ import { LineItem, Prisma } from "@/generated/prisma/client";
 import { Decimal } from "@prisma/client/runtime/client";
 import { ApiError } from "@/lib/api/errors";
 
-type MinimalProcessableLineItem = Pick<
+type MinimalProcessableLineItem = Omit<
   LineItem,
-  | "description"
-  | "discountType"
-  | "discount"
-  | "unitPrice"
-  | "quantity"
-  | "taxPercentage"
+  "createdAt" | "updatedAt" | "documentId"
 >;
 
 type CalculatedLineItem = Pick<
   MinimalProcessableLineItem,
-  "description" | "quantity"
+  "description" | "quantity" | "id"
 > & {
   lineTotal: string;
   lineSubTotal: string;
