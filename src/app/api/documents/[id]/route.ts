@@ -85,7 +85,7 @@ export async function GET(
       data: {
         id: document.id,
         title: document.title,
-        issueDate: document.issueDate.toDateString(),
+        issueDate: document.issueDate.toISOString(),
         customer: document.customer,
         status: document.status,
         lineItems: calculatedLineItems,
@@ -193,7 +193,7 @@ export async function PUT(
       message: "Document updated successfully",
       data: {
         ...updatedDocumentMeta,
-        issueDate: updatedDocumentMeta.issueDate.toDateString(),
+        issueDate: updatedDocumentMeta.issueDate.toISOString(),
       },
     });
   } catch (error) {

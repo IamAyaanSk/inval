@@ -73,3 +73,48 @@ export type CreateDocumentApiRequestBody = z.infer<
 export type CreateDocumentApiResponseSchema = z.infer<
   typeof createDocumentApiResponseSchema
 >;
+
+// Document summary
+export const documentSummaryQueryParamsSchema = z.object({
+  from: iso8601DateTimeSchema,
+  to: iso8601DateTimeSchema,
+});
+
+const recentDraftDocumentSchema = documentBaseSchema.pick({
+  id: true,
+  title: true,
+  customer: true,
+  issueDate: true,
+});
+
+const recentFinalizedDocumentSchema = documentBaseSchema.pick({
+  id: true,
+  title: true,
+  customer: true,
+  issueDate: true,
+  grandTotal: true,
+});
+
+export const documentSummaryApiResponseSchema = createApiResponseSchema(
+  z.object({
+    counts: z.object({
+      total: z.number(),
+      draft: z.number(),
+      finalized: z.number(),
+    }),
+    totals: z.object({
+      grandTotal: z.string(),
+      totalTax: z.string(),
+      totalDiscount: z.string(),
+    }),
+    recentDraftDocuments: z.array(recentDraftDocumentSchema),
+    recentFinalizedDocuments: z.array(recentFinalizedDocumentSchema),
+  }),
+);
+
+export type DocumentSummaryQueryParams = z.infer<
+  typeof documentSummaryQueryParamsSchema
+>;
+export type DocumentSummaryApiResponse = z.infer<
+  typeof documentSummaryApiResponseSchema
+>;
