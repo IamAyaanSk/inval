@@ -73,3 +73,47 @@ model Verification {
   @@index([identifier])
   @@map("verification")
 }
+
+model Document {
+  id String @id @default(ulid())
+  title String
+  customer String 
+  issueDate DateTime
+  status DocumentStatus
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  lineItems LineItem[]
+
+  @@index([status])  
+  @@index([issueDate])
+  @@map("document")
+}
+
+model LineItem {
+  id String @id @default(ulid())
+  description String
+  quantity Int
+  unitPrice Decimal @db.Decimal(12, 2)
+  taxPercentage Decimal? @db.Decimal(12, 2)
+  discount Decimal? @db.Decimal(12, 2)
+  discountType DiscountType?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  documentId String
+  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([documentId])
+  @@map("line_item")
+}
+
+enum DocumentStatus {
+  DRAFT
+  FINALIZED
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED
+}
