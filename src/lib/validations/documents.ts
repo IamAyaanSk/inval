@@ -74,6 +74,25 @@ export type CreateDocumentApiResponseSchema = z.infer<
   typeof createDocumentApiResponseSchema
 >;
 
+// List all documents
+export const listDocumentsApiResponseSchema = createApiResponseSchema(
+  z.object({
+    documents: z.array(
+      documentBaseSchema.pick({
+        id: true,
+        title: true,
+        customer: true,
+        issueDate: true,
+        status: true,
+      }),
+    ),
+  }),
+);
+
+export type ListDocumentsApiResponse = z.infer<
+  typeof listDocumentsApiResponseSchema
+>;
+
 // Document summary
 export const documentSummaryQueryParamsSchema = z.object({
   from: iso8601DateTimeSchema,

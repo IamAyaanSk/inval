@@ -6,9 +6,61 @@ import { RouteHandlerReturnType } from "@/lib/types";
 import {
   createDocumentApiRequestBodySchema,
   CreateDocumentApiResponseSchema,
+  ListDocumentsApiResponse,
 } from "@/lib/validations/documents";
 import { headers } from "next/headers";
 import { NextResponse } from "next/server";
+
+export const GET = async (): RouteHandlerReturnType<ListDocumentsApiResponse> => {
+  try {
+    const session = await auth.api.getSession({
+      headers: await headers(),
+    });
+
+    if (!session) {
+      throw new ApiError({
+        message: "You are not authorized for this action",
+        httpStatusCode: 401,
+      });
+    }
+
+    const documents = await prisma.document.findMany({
+      where: { userId: session.user.id },
+      orderBy: { createdAt: "desc" },
+      take: 500,
+      select: {
+        id: true,
+        title: true,
+        customer: true,
+        issueDate: true,
+        status: true,
+      },
+    });
+
+    return NextResponse.json({
+      status: "success",
+      message: "Documents fetched",
+      data: {
+        documents: documents.map((doc) => ({
+          ...doc,
+          issueDate: doc.issueDate.toISOString(),
+        })),
+      },
+    });
+  } catch (error) {
+    console.error(error);
+
+    const details = getErrorDetails({
+      error,
+      forEntity: "Document",
+    });
+
+    return NextResponse.json(
+      { status: "error", message: details.message },
+      { status: details.statusCode },
+    );
+  }
+};
 
 export const POST = async (
   request: Request,
