@@ -17,9 +17,9 @@ type CalculatedLineItem = Pick<
   lineSubTotal: string;
   lineTaxAmount: string;
   lineDiscountAmount: string;
-  discount: string;
+  discount?: string;
   unitPrice: string;
-  taxPercentage: string;
+  taxPercentage?: string;
 };
 
 export const roundDecimal = (decimal: Decimal, points = 2) =>
@@ -127,10 +127,10 @@ export const calculateDocumentTotalOrThrow = (
   });
 
   return {
-    subTotal: subTotal,
-    discountAmount,
-    taxAmount,
-    grandTotal,
-    calculatedLineItems,
+    subTotal: decimalToString(subTotal),
+    discountAmount: decimalToString(discountAmount),
+    taxAmount: decimalToString(taxAmount),
+    grandTotal: decimalToString(grandTotal),
+    calculatedLineItems: calculatedLineItems,
   };
 };

@@ -9,23 +9,21 @@ import { ulidSchema } from "@/lib/validations/shared";
 import { ApiError } from "@/lib/api/errors";
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import {
-  calculateDocumentTotalOrThrow,
-  decimalToString,
-} from "@/lib/rate-calculator";
+import { calculateDocumentTotalOrThrow } from "@/lib/rate-calculator";
 import { auth } from "@/lib/auth/server";
 import { headers } from "next/headers";
 
 export async function GET(
+  _: Request,
   ctx: RouteContext<"/api/documents/[id]">,
 ): RouteHandlerReturnType<GetDocumentByIdApiResponse> {
   try {
-    const validatedPathParams = ulidSchema.safeParse((await ctx.params).id);
+    const validatedDocumentId = ulidSchema.safeParse((await ctx.params).id);
 
-    if (!validatedPathParams.success) {
+    if (!validatedDocumentId.success) {
       throw new ApiError({
         message:
-          validatedPathParams.error.issues[0]?.message ?? "Invalid input",
+          validatedDocumentId.error.issues[0]?.message ?? "Invalid input",
         httpStatusCode: 422,
       });
     }
@@ -43,7 +41,7 @@ export async function GET(
 
     const document = await prisma.document.findFirst({
       where: {
-        id: validatedPathParams.data,
+        id: validatedDocumentId.data,
         userId: session.user.id,
       },
       select: {
@@ -91,10 +89,10 @@ export async function GET(
         customer: document.customer,
         status: document.status,
         lineItems: calculatedLineItems,
-        subTotal: decimalToString(subTotal),
-        grandTotal: decimalToString(grandTotal),
-        taxAmount: decimalToString(taxAmount),
-        discountAmount: decimalToString(discountAmount),
+        subTotal: subTotal,
+        grandTotal: grandTotal,
+        taxAmount: taxAmount,
+        discountAmount: discountAmount,
       },
     });
   } catch (error) {
@@ -117,14 +115,14 @@ export async function PUT(
   ctx: RouteContext<"/api/documents/[id]">,
 ): RouteHandlerReturnType<UpdateDocumentMetaApiResponse> {
   try {
-    const validatedPathParams = ulidSchema.safeParse((await ctx.params).id);
+    const validatedDocumentId = ulidSchema.safeParse((await ctx.params).id);
     const validatedRequestBody =
       updateDocumentMetaApiRequestBodySchema.safeParse(await request.json());
 
-    if (!validatedPathParams.success) {
+    if (!validatedDocumentId.success) {
       throw new ApiError({
         message:
-          validatedPathParams.error.issues[0]?.message ?? "Invalid input",
+          validatedDocumentId.error.issues[0]?.message ?? "Invalid input",
         httpStatusCode: 422,
       });
     }
@@ -150,7 +148,7 @@ export async function PUT(
 
     const document = await prisma.document.findFirst({
       where: {
-        id: validatedPathParams.data,
+        id: validatedDocumentId.data,
         userId: session.user.id,
       },
       select: {
@@ -174,7 +172,7 @@ export async function PUT(
 
     const updatedDocumentMeta = await prisma.document.update({
       where: {
-        id: validatedPathParams.data,
+        id: validatedDocumentId.data,
         userId: session.user.id,
       },
       data: {
@@ -195,7 +193,6 @@ export async function PUT(
       message: "Document updated successfully",
       data: {
         ...updatedDocumentMeta,
-
         issueDate: updatedDocumentMeta.issueDate.toDateString(),
       },
     });
@@ -215,15 +212,16 @@ export async function PUT(
 }
 
 export async function DELETE(
+  _: Request,
   ctx: RouteContext<"/api/documents/[id]">,
 ): RouteHandlerReturnType {
   try {
-    const validatedPathParams = ulidSchema.safeParse((await ctx.params).id);
+    const validatedDocumentId = ulidSchema.safeParse((await ctx.params).id);
 
-    if (!validatedPathParams.success) {
+    if (!validatedDocumentId.success) {
       throw new ApiError({
         message:
-          validatedPathParams.error.issues[0]?.message ?? "Invalid input",
+          validatedDocumentId.error.issues[0]?.message ?? "Invalid input",
         httpStatusCode: 422,
       });
     }
@@ -241,7 +239,7 @@ export async function DELETE(
 
     const document = await prisma.document.findFirst({
       where: {
-        id: validatedPathParams.data,
+        id: validatedDocumentId.data,
         userId: session.user.id,
       },
       select: {
@@ -266,7 +264,7 @@ export async function DELETE(
     // Line items are cascade so deleting doc would delete items too, good for now
     await prisma.document.delete({
       where: {
-        id: validatedPathParams.data,
+        id: validatedDocumentId.data,
       },
     });
 

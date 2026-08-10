@@ -23,7 +23,7 @@ export const iso8601DateTimeSchema = z.iso.datetime(
 
 export const ulidSchema = z.ulid("Invalid id");
 
-export const descriptionSchema = z.string().trim().min(1).max(500).optional();
+export const descriptionSchema = z.string().trim().min(1).max(500);
 
 // Api responses validation schemas
 const apiResponseStatusSchema = z.enum(["success", "error"]);

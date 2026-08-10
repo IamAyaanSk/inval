@@ -1,45 +1,31 @@
-import { DiscountType, DocumentStatus } from "@/generated/prisma/browser";
+import { DocumentStatus } from "@/generated/prisma/browser";
 import {
   createApiResponseSchema,
-  descriptionSchema,
   getPositiveDecimalSchema,
   getNameSchema,
   iso8601DateTimeSchema,
   ulidSchema,
 } from "@/lib/validations/shared";
 import { z } from "zod";
+import { lineItemBaseSchema } from "@/lib/validations/line-items";
 
-// Get document
-const getDocumentByIdLineItemSchema = z.object({
+export const documentBaseSchema = z.object({
   id: ulidSchema,
-  description: descriptionSchema,
-  quantity: z.number().positive(),
-  unitPrice: getPositiveDecimalSchema("Unit price"),
-  discount: getPositiveDecimalSchema("Discount"),
-  discountType: z.enum(DiscountType).optional().nullable(),
-  taxPercentage: getPositiveDecimalSchema("Tax"),
+  title: getNameSchema("Document title"),
+  customer: getNameSchema("Customer name"),
+  issueDate: iso8601DateTimeSchema,
+  status: z.enum(DocumentStatus),
+  lineItems: z.array(lineItemBaseSchema),
 
-  lineSubTotal: getPositiveDecimalSchema("Sub total"),
-  lineDiscountAmount: getPositiveDecimalSchema("Calculated discount"),
-  lineTaxAmount: getPositiveDecimalSchema("Calculated tax"),
-  lineTotal: getPositiveDecimalSchema("Line total"),
+  subTotal: getPositiveDecimalSchema("Sub total"),
+  discountAmount: getPositiveDecimalSchema("Calculated discount"),
+  taxAmount: getPositiveDecimalSchema("Calculated tax"),
+  grandTotal: getPositiveDecimalSchema("Grand total"),
 });
 
-export const getDocumentByIdApiResponseSchema = createApiResponseSchema(
-  z.object({
-    id: ulidSchema,
-    title: getNameSchema("Document title"),
-    customer: getNameSchema("Customer name"),
-    issueDate: iso8601DateTimeSchema,
-    status: z.enum(DocumentStatus),
-    lineItems: z.array(getDocumentByIdLineItemSchema),
-
-    subTotal: getPositiveDecimalSchema("Sub total"),
-    discountAmount: getPositiveDecimalSchema("Calculated discount"),
-    taxAmount: getPositiveDecimalSchema("Calculated tax"),
-    grandTotal: getPositiveDecimalSchema("Grand total"),
-  }),
-);
+// Get document
+export const getDocumentByIdApiResponseSchema =
+  createApiResponseSchema(documentBaseSchema);
 
 export type GetDocumentByIdApiResponse = z.infer<
   typeof getDocumentByIdApiResponseSchema
@@ -47,17 +33,17 @@ export type GetDocumentByIdApiResponse = z.infer<
 
 // Update document meta
 export const updateDocumentMetaApiRequestBodySchema = z.object({
-  title: getNameSchema("Document title").optional(),
-  customer: getNameSchema("Customer name").optional(),
-  issueDate: iso8601DateTimeSchema.optional(),
+  title: documentBaseSchema.shape.title.optional(),
+  customer: documentBaseSchema.shape.customer.optional(),
+  issueDate: documentBaseSchema.shape.issueDate.optional(),
 });
 
 export const updateDocumentMetaApiResponseSchema = createApiResponseSchema(
-  z.object({
-    id: ulidSchema,
-    title: getNameSchema("Document title"),
-    customer: getNameSchema("Customer name"),
-    issueDate: iso8601DateTimeSchema,
+  documentBaseSchema.pick({
+    id: true,
+    title: true,
+    customer: true,
+    issueDate: true,
   }),
 );
 
@@ -69,15 +55,15 @@ export type UpdateDocumentMetaApiResponse = z.infer<
 >;
 
 // Create new document
-export const createDocumentApiRequestBodySchema = z.object({
-  title: getNameSchema("Document title"),
-  customer: getNameSchema("Customer name"),
-  issueDate: iso8601DateTimeSchema,
+export const createDocumentApiRequestBodySchema = documentBaseSchema.pick({
+  title: true,
+  customer: true,
+  issueDate: true,
 });
 
 export const createDocumentApiResponseSchema = createApiResponseSchema(
-  z.object({
-    id: ulidSchema, // Will use this for redirection to document page
+  documentBaseSchema.pick({
+    id: true,
   }),
 );
 
