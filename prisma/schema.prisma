@@ -88,6 +88,11 @@ model Document {
   userId String
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  // Fields to generate report without overloading system
+  grandTotal Decimal? @db.Decimal(12, 2)
+  totalTax Decimal? @db.Decimal(12, 2)
+  totalDiscount Decimal? @db.Decimal(12, 2)
+
   lineItems LineItem[]
 
   @@index([status])  
