@@ -21,6 +21,7 @@ import {
   DocumentCardSkeleton,
 } from "@/components/dashboard/document-card";
 import { NewDocumentDialog } from "@/components/dashboard/new-document-dialog";
+import { ErrorAlert } from "@/components/error-alert";
 
 export function DashboardContent() {
   const router = useRouter();
@@ -97,13 +98,10 @@ export function DashboardContent() {
       </div>
 
       {isError && (
-        <div className="rounded-xl border border-destructive/30 bg-destructive/5 p-4">
-          <p className="text-sm text-destructive">
-            {error instanceof Error
-              ? error.message
-              : "Failed to load summary data"}
-          </p>
-        </div>
+        <ErrorAlert
+          error={error}
+          fallbackMessage="Failed to load summary data"
+        />
       )}
 
       <div className="flex flex-col gap-8 px-2">

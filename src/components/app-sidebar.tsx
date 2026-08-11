@@ -31,12 +31,12 @@ const navItems = [
   },
   {
     title: "Documents",
-    url: "/documents",
+    url: "/dashboard/documents",
     icon: FileText,
   },
   {
     title: "API Keys",
-    url: "/api-keys",
+    url: "/dashboard/api-keys",
     icon: KeyRound,
   },
 ];
@@ -58,7 +58,10 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             <SidebarMenu>
               {navItems.map((item) => {
                 const isActive =
-                  pathname === item.url || pathname?.startsWith(`${item.url}/`);
+                  item.url === "/dashboard"
+                    ? pathname === "/dashboard"
+                    : pathname === item.url ||
+                      pathname?.startsWith(`${item.url}/`);
 
                 return (
                   <SidebarMenuItem key={item.title}>

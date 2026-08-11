@@ -1,5 +1,9 @@
 import { AppSidebar } from "@/components/app-sidebar";
-import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
 import { headers } from "next/headers";
 import { auth } from "@/lib/auth/server";
 import { redirect } from "next/navigation";
@@ -20,8 +24,9 @@ export default async function DashboardLayout({
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <header className="flex shrink-0 items-center gap-2 border-b mx-4 md:mx-0 md:ml-8 py-4 pl-2">
+        <header className="flex shrink-0 items-center gap-2 border-b mx-4 md:mx-0 md:ml-8 py-3 pl-2">
           <div className="flex items-center gap-2">
+            <SidebarTrigger className="-ml-1 md:hidden" />
             <p className="text-primary font-medium tracking-wide">
               Hi {session.user.name}
             </p>
