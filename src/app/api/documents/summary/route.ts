@@ -27,8 +27,21 @@ export const GET = async (
       });
     }
 
+    const reqHeaders = await headers();
+    const isApiKeyRequest =
+      reqHeaders.has("x-api-key") ||
+      reqHeaders.get("authorization")?.toLowerCase().startsWith("bearer ") ||
+      reqHeaders.has("api-key");
+
+    if (isApiKeyRequest) {
+      throw new ApiError({
+        message: "Document summary is not accessible via API key",
+        httpStatusCode: 403,
+      });
+    }
+
     const session = await auth.api.getSession({
-      headers: await headers(),
+      headers: reqHeaders,
     });
 
     if (!session) {
