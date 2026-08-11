@@ -53,7 +53,7 @@ export function NewDocumentDialog() {
       toast.success("Document created");
       setOpen(false);
       reset();
-      router.push(`/documents/${data.id}`);
+      router.push(`/dashboard/documents/${data.id}`);
     } catch {
       toast.error("Failed to create document");
     }

@@ -4,8 +4,8 @@ import { useDocumentsQuery } from "@/lib/queries/documents";
 import {
   DocumentCard,
   DocumentCardSkeleton,
-} from "@/components/dashboard/document-card";
-import { NewDocumentDialog } from "@/components/dashboard/new-document-dialog";
+} from "@/components/documents/card";
+import { NewDocumentDialog } from "@/components/documents/new-document-dialog";
 import { ErrorAlert } from "@/components/error-alert";
 
 export function DocumentsContent() {

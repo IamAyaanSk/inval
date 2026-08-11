@@ -51,6 +51,9 @@ export async function GET(
         status: true,
         id: true,
         lineItems: {
+          orderBy: {
+            createdAt: "asc",
+          },
           select: {
             id: true,
             description: true,

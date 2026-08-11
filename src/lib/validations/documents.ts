@@ -1,7 +1,7 @@
 import { DocumentStatus } from "@/generated/prisma/browser";
 import {
   createApiResponseSchema,
-  getPositiveDecimalSchema,
+  getNonNegativeDecimalSchema,
   getNameSchema,
   iso8601DateTimeSchema,
   ulidSchema,
@@ -17,10 +17,10 @@ export const documentBaseSchema = z.object({
   status: z.enum(DocumentStatus),
   lineItems: z.array(lineItemBaseSchema),
 
-  subTotal: getPositiveDecimalSchema("Sub total"),
-  discountAmount: getPositiveDecimalSchema("Calculated discount"),
-  taxAmount: getPositiveDecimalSchema("Calculated tax"),
-  grandTotal: getPositiveDecimalSchema("Grand total"),
+  subTotal: getNonNegativeDecimalSchema("Sub total"),
+  discountAmount: getNonNegativeDecimalSchema("Calculated discount"),
+  taxAmount: getNonNegativeDecimalSchema("Calculated tax"),
+  grandTotal: getNonNegativeDecimalSchema("Grand total"),
 });
 
 // Get document
@@ -137,3 +137,13 @@ export type DocumentSummaryQueryParams = z.infer<
 export type DocumentSummaryApiResponse = z.infer<
   typeof documentSummaryApiResponseSchema
 >;
+
+// document meta form
+export const documentMetaFormSchema = documentBaseSchema.pick({
+  title: true,
+  customer: true,
+  issueDate: true,
+});
+
+export type DocumentMetaForm = z.infer<typeof documentMetaFormSchema>;
+

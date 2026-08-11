@@ -7,19 +7,31 @@ export const getNameSchema = (forName: string) =>
     .min(2, `${forName} must be at least 2 characters`)
     .max(120, `${forName} is too long`);
 
-export const getPositiveDecimalSchema = (forEntity: string) =>
+
+
+export const getNonNegativeDecimalSchema = (forEntity: string) =>
   z
     .string()
     .regex(/^\d+(?:\.\d{1,2})?$/, {
       message: `${forEntity} must be a valid decimal with up to 2 decimal places`,
     })
-    .refine((value) => Number(value) > 0, {
-      message: `${forEntity} must be greater than 0`,
+    .refine((value) => Number(value) >= 0, {
+      message: `${forEntity} must be greater than or equal to 0`,
     });
 
-export const iso8601DateTimeSchema = z.iso.datetime(
-  "Enter a valid ISO 8601 datetime",
-);
+import { DateTime } from "luxon";
+
+export const iso8601DateTimeSchema = z.string().transform((val, ctx) => {
+  const dt = DateTime.fromISO(val);
+  if (!dt.isValid) {
+    ctx.addIssue({
+      code: "custom",
+      message: "Enter a valid ISO 8601 datetime",
+    });
+    return z.NEVER;
+  }
+  return dt.toUTC().toISO() ?? dt.toUTC().toString();
+});
 
 export const ulidSchema = z.ulid("Invalid id");
 

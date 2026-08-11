@@ -8,3 +8,5 @@ export const DEFAULT_LINE_ITEM = {
   discount: "0.00",
   discountType: DiscountType.FIXED,
 };
+
+export const DEFAULT_DEBOUNCE_TIME_IN_MS = 400;

@@ -2,31 +2,89 @@ import { z } from "zod";
 import {
   createApiResponseSchema,
   descriptionSchema,
-  getPositiveDecimalSchema,
+  getNonNegativeDecimalSchema,
   ulidSchema,
 } from "@/lib/validations/shared";
 import { DiscountType } from "@/generated/prisma/browser";
 export const lineItemBaseSchema = z.object({
   id: ulidSchema,
   description: descriptionSchema,
-  quantity: z.number().positive(),
-  unitPrice: getPositiveDecimalSchema("Unit price"),
-  discount: getPositiveDecimalSchema("Discount").optional(),
+  quantity: z
+    .number({ message: "Quantity is required" })
+    .int("Quantity must be a whole number")
+    .positive("Quantity must be at least 1"),
+  unitPrice: getNonNegativeDecimalSchema("Unit price"),
+  discount: getNonNegativeDecimalSchema("Discount").optional(),
   discountType: z.enum(DiscountType).optional(),
-  taxPercentage: getPositiveDecimalSchema("Tax").optional(),
+  taxPercentage: getNonNegativeDecimalSchema("Tax").optional(),
 
-  lineSubTotal: getPositiveDecimalSchema("Sub total"),
-  lineDiscountAmount: getPositiveDecimalSchema("Calculated discount"),
-  lineTaxAmount: getPositiveDecimalSchema("Calculated tax"),
-  lineTotal: getPositiveDecimalSchema("Line total"),
+  lineSubTotal: getNonNegativeDecimalSchema("Sub total"),
+  lineDiscountAmount: getNonNegativeDecimalSchema("Calculated discount"),
+  lineTaxAmount: getNonNegativeDecimalSchema("Calculated tax"),
+  lineTotal: getNonNegativeDecimalSchema("Line total"),
 });
 
 export const documentTotalsSchema = z.object({
-  discountAmount: getPositiveDecimalSchema("Calculated discount"),
-  subTotal: getPositiveDecimalSchema("Sub total"),
-  grandTotal: getPositiveDecimalSchema("Grand total"),
-  taxAmount: getPositiveDecimalSchema("Calculated tax"),
+  discountAmount: getNonNegativeDecimalSchema("Calculated discount"),
+  subTotal: getNonNegativeDecimalSchema("Sub total"),
+  grandTotal: getNonNegativeDecimalSchema("Grand total"),
+  taxAmount: getNonNegativeDecimalSchema("Calculated tax"),
 });
+
+// form
+export const lineItemFormSchema = lineItemBaseSchema
+  .pick({
+    description: true,
+    quantity: true,
+    unitPrice: true,
+    discount: true,
+    discountType: true,
+    taxPercentage: true,
+  })
+  .superRefine((val, ctx) => {
+    const quantity = val.quantity ?? 0;
+    const unitPrice = parseFloat(val.unitPrice ?? "0");
+    const subTotal = quantity * (isNaN(unitPrice) ? 0 : unitPrice);
+
+    if (val.discount) {
+      const discountVal = parseFloat(val.discount);
+      if (!isNaN(discountVal)) {
+        if (val.discountType === DiscountType.PERCENTAGE) {
+          if (discountVal > 100) {
+            ctx.addIssue({
+              code: "custom",
+              path: ["discount"],
+              message: "Percentage discount cannot exceed 100%",
+            });
+          }
+        } else if (
+          val.discountType === DiscountType.FIXED ||
+          !val.discountType
+        ) {
+          if (discountVal > subTotal) {
+            ctx.addIssue({
+              code: "custom",
+              path: ["discount"],
+              message: "Fixed discount cannot exceed line subtotal",
+            });
+          }
+        }
+      }
+    }
+
+    if (val.taxPercentage) {
+      const taxVal = parseFloat(val.taxPercentage);
+      if (!isNaN(taxVal) && taxVal > 100) {
+        ctx.addIssue({
+          code: "custom",
+          path: ["taxPercentage"],
+          message: "Percentage tax cannot exceed 100%",
+        });
+      }
+    }
+  });
+
+export type LineItemForm = z.infer<typeof lineItemFormSchema>;
 
 // Update line item
 export const updateLineItemRequestBodySchema = z.object({

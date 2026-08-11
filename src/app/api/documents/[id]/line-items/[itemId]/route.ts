@@ -100,7 +100,7 @@ export const PUT = async (
         },
       },
       data: {
-        ...validatedRequestBody,
+        ...validatedRequestBody.data,
       },
     });
 
@@ -110,6 +110,9 @@ export const PUT = async (
       },
       select: {
         lineItems: {
+          orderBy: {
+            createdAt: "asc",
+          },
           select: {
             id: true,
             description: true,
@@ -271,6 +274,9 @@ export const DELETE = async (
       },
       select: {
         lineItems: {
+          orderBy: {
+            createdAt: "asc",
+          },
           select: {
             id: true,
             description: true,

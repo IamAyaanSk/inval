@@ -26,12 +26,18 @@ export async function apiFetch<T>(
     return response.data;
   } catch (error: unknown) {
     if (
-      isAxiosError<{ error?: string; code?: string }>(error) &&
+      isAxiosError<{ message?: string; error?: string; code?: string }>(
+        error,
+      ) &&
       error.response
     ) {
       const { statusText, data: payload } = error.response;
 
-      throw new Error(payload?.error ?? (statusText || "Request failed"));
+      throw new Error(
+        payload?.message ??
+          payload?.error ??
+          (statusText || "Something went wrong"),
+      );
     }
 
     throw error;

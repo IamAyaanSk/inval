@@ -41,6 +41,9 @@ export const PUT = async (
       select: {
         status: true,
         lineItems: {
+          orderBy: {
+            createdAt: "asc",
+          },
           select: {
             id: true,
             description: true,

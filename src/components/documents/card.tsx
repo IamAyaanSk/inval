@@ -23,7 +23,7 @@ export function DocumentCard({
 }: DocumentCardProps) {
   return (
     <Link
-      href={`/documents/${id}`}
+      href={`/dashboard/documents/${id}`}
       className="border group flex w-40 shrink-0 flex-col overflow-hidden rounded-xl transition-all hover:ring-primary/40 hover:shadow-md"
     >
       <div className="relative flex h-48 items-center justify-center bg-muted/40 transition-colors group-hover:bg-primary/5">

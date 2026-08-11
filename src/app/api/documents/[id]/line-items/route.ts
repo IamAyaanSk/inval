@@ -91,6 +91,9 @@ export const POST = async (
       },
       select: {
         lineItems: {
+          orderBy: {
+            createdAt: "asc",
+          },
           select: {
             id: true,
             description: true,
