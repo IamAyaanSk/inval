@@ -12,10 +12,10 @@ export default async function DashboardPage() {
   }
 
   return (
-    <main className="flex min-h-dvh items-center justify-center p-4">
-      <h1 className="text-2xl font-medium">
+    <div className="flex flex-col gap-4">
+      <h1 className="text-2xl font-semibold tracking-wider">
         Welcome, {session.user.name}
       </h1>
-    </main>
+    </div>
   );
 }

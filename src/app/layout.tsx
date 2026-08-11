@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   description: "Create acccurate calculation summary from line items",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default async function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
