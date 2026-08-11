@@ -74,7 +74,7 @@ export const GET = async (
         },
       }),
       prisma.document.findMany({
-        where: { ...dateRangeFilter, status: "DRAFT" },
+        where: { userId: session.user.id, status: "DRAFT" },
         orderBy: { createdAt: "desc" },
         take: 4,
         select: {
@@ -85,7 +85,7 @@ export const GET = async (
         },
       }),
       prisma.document.findMany({
-        where: { ...dateRangeFilter, status: "FINALIZED" },
+        where: { userId: session.user.id, status: "FINALIZED" },
         orderBy: { createdAt: "desc" },
         take: 5,
         select: {

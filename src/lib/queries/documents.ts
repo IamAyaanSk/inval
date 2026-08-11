@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  keepPreviousData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { apiFetch } from "@/lib/api/http";
 import type {
   CreateDocumentApiRequestBody,
@@ -125,6 +130,7 @@ export function useDocumentSummaryQuery(params: DocumentSummaryQueryParams) {
   return useQuery({
     queryKey: documentQueryKeys.summary(params),
     queryFn: ({ signal }) => fetchDocumentSummary(params, { signal }),
+    placeholderData: keepPreviousData,
   });
 }
 

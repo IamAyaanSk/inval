@@ -20,14 +20,14 @@ export default async function DashboardLayout({
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
-        <header className="flex shrink-0 items-center gap-2 border-b mx-4 md:mx-0 md:ml-8 py-4">
+        <header className="flex shrink-0 items-center gap-2 border-b mx-4 md:mx-0 md:ml-8 py-4 pl-2">
           <div className="flex items-center gap-2">
-            <h2 className="text-[14px] text-primary font-medium tracking-wide">
+            <p className="text-primary font-medium tracking-wide">
               Hi {session.user.name}
-            </h2>
+            </p>
           </div>
         </header>
-        <main className="flex flex-1 flex-col gap-4 mx-4 md:mx-0 md:ml-8 mt-4">
+        <main className="flex flex-1 flex-col gap-4 mx-4 md:mx-0 md:ml-8 mt-4 pl-1 pr-2">
           {children}
         </main>
       </SidebarInset>
