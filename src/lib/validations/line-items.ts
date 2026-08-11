@@ -6,8 +6,6 @@ import {
   ulidSchema,
 } from "@/lib/validations/shared";
 import { DiscountType } from "@/generated/prisma/browser";
-import { documentBaseSchema } from "@/lib/validations/documents";
-
 export const lineItemBaseSchema = z.object({
   id: ulidSchema,
   description: descriptionSchema,
@@ -23,11 +21,11 @@ export const lineItemBaseSchema = z.object({
   lineTotal: getPositiveDecimalSchema("Line total"),
 });
 
-const documentTotalsSchema = documentBaseSchema.pick({
-  discountAmount: true,
-  subTotal: true,
-  grandTotal: true,
-  taxAmount: true,
+export const documentTotalsSchema = z.object({
+  discountAmount: getPositiveDecimalSchema("Calculated discount"),
+  subTotal: getPositiveDecimalSchema("Sub total"),
+  grandTotal: getPositiveDecimalSchema("Grand total"),
+  taxAmount: getPositiveDecimalSchema("Calculated tax"),
 });
 
 // Update line item

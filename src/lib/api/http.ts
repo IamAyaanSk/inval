@@ -1,5 +1,4 @@
 import axios, { isAxiosError, type AxiosRequestConfig } from "axios";
-import { ApiError } from "./errors";
 
 type ApiFetchOptions = Omit<AxiosRequestConfig, "url" | "data"> & {
   body?: unknown;
@@ -26,14 +25,13 @@ export async function apiFetch<T>(
 
     return response.data;
   } catch (error: unknown) {
-    if (isAxiosError<{ error?: string; code?: string }>(error) && error.response) {
-      const { status, statusText, data: payload } = error.response;
+    if (
+      isAxiosError<{ error?: string; code?: string }>(error) &&
+      error.response
+    ) {
+      const { statusText, data: payload } = error.response;
 
-      throw new ApiError(
-        payload?.error ?? (statusText || "Request failed"),
-        status,
-        payload?.code,
-      );
+      throw new Error(payload?.error ?? (statusText || "Request failed"));
     }
 
     throw error;

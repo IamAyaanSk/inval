@@ -7,6 +7,11 @@ export const auth = betterAuth({
   database: prismaAdapter(prisma, {
     provider: "postgresql",
   }),
+  emailVerification: {
+    sendVerificationEmail: async ({ user, url, token }) => {
+      console.log("Verification URL:", url, token, user);
+    },
+  },
   plugins: [nextCookies()],
   advanced: {
     database: {
@@ -15,5 +20,6 @@ export const auth = betterAuth({
   },
   emailAndPassword: {
     enabled: true,
+    requireEmailVerification: true,
   },
 });
