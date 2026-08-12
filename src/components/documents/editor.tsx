@@ -48,17 +48,20 @@ export function DocumentEditor({ document }: { document: DocumentData }) {
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col gap-6 rounded-2xl bg-card pr-6 md:pr-8 text-card-foreground">
       {/* Editor Header */}
-      <div className="flex items-center justify-between rounded-2xl border bg-card p-4 md:px-6 shadow-xs text-card-foreground">
-        <div className="flex items-center gap-2.5">
+      <div className="flex items-center justify-between pb-4 border-b">
+        <div>
           <h2 className="text-base font-semibold">Document Editor</h2>
+          <p className="text-xs text-muted-foreground">
+            Edit metadata and line items in real time
+          </p>
         </div>
         <Button
           type="button"
           onClick={handleFinalize}
           disabled={finalizeMutation.isPending}
-          className="gap-2"
+          className="gap-2 rounded-2xl"
         >
           {finalizeMutation.isPending ? (
             <Loader2 className="size-4 animate-spin" />
@@ -69,7 +72,7 @@ export function DocumentEditor({ document }: { document: DocumentData }) {
         </Button>
       </div>
 
-      {/* Metadata Editor */}
+      {/* Metadata Section */}
       <DocumentMetaEditor
         documentId={document.id}
         documentMeta={{
@@ -80,30 +83,11 @@ export function DocumentEditor({ document }: { document: DocumentData }) {
         setEditorHasError={setEditorHasError}
       />
 
-      {/* Line Items Editor */}
-      <div className="flex flex-col gap-4 rounded-2xl border bg-card p-6 md:p-8 shadow-xs text-card-foreground">
+      <div className="flex flex-col gap-4 pt-4 border-t">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <h3 className="text-sm font-semibold">Line Items</h3>
-            <span className="rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-muted-foreground">
-              {document.lineItems.length}
-            </span>
-          </div>
-          <Button
-            type="button"
-            size="sm"
-            variant="outline"
-            onClick={handleAddLineItem}
-            disabled={createLineItemMutation.isPending}
-            className="gap-1.5 text-xs"
-          >
-            {createLineItemMutation.isPending ? (
-              <Loader2 className="size-3.5 animate-spin" />
-            ) : (
-              <Plus className="size-3.5" />
-            )}
-            Add Item
-          </Button>
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+            Line Items ({document.lineItems.length})
+          </h3>
         </div>
 
         {document.lineItems.length === 0 ? (
@@ -123,22 +107,47 @@ export function DocumentEditor({ document }: { document: DocumentData }) {
             </Button>
           </div>
         ) : (
-          <div className="flex flex-col gap-3.5">
-            {document.lineItems.map((item) => (
-              <LineItemEditor
-                key={item.id}
-                documentId={document.id}
-                item={item}
-                setEditorHasError={setEditorHasError}
-              />
-            ))}
+          <div className="flex flex-col gap-4 bg-muted py-4 px-2 rounded-2xl overflow-x-auto">
+            <div className="min-w-[620px] flex flex-col gap-4">
+              <div className="grid grid-cols-8 text-sm gap-2 font-medium px-4 text-muted-foreground">
+                <h5 className="col-span-3">Description</h5>
+                <h5>Unit Price</h5>
+                <h5>Quantity</h5>
+                <h5 className="col-span-2">Discount</h5>
+                <h5>Tax (%)</h5>
+              </div>
+              <div className="flex flex-col gap-3.5">
+                {document.lineItems.map((item) => (
+                  <LineItemEditor
+                    key={item.id}
+                    documentId={document.id}
+                    item={item}
+                    setEditorHasError={setEditorHasError}
+                  />
+                ))}
+              </div>
+
+              <div className="flex items-center justify-center">
+                <Button
+                  size={"lg"}
+                  onClick={handleAddLineItem}
+                  disabled={createLineItemMutation.isPending}
+                  className="text-xs w-fit rounded-full bg-primary text-primary-foreground hover:bg-primary/90 hover:text-primary-foreground transition-colors"
+                >
+                  {createLineItemMutation.isPending ? (
+                    <Loader2 className="size-3.5 animate-spin" />
+                  ) : (
+                    <Plus className="size-3.5" />
+                  )}
+                </Button>
+              </div>
+            </div>
           </div>
         )}
       </div>
 
-      {/* Totals Summary */}
-      <div className="flex flex-col gap-2.5 rounded-2xl border bg-card p-6 md:p-8 shadow-xs text-card-foreground text-xs">
-        <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+      <div className="flex flex-col gap-2.5 pt-6 border-t text-xs">
+        <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-1">
           Document Totals
         </h3>
         <div className="flex justify-between text-muted-foreground">

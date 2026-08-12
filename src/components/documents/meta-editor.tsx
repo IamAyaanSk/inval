@@ -4,9 +4,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Input } from "@/components/ui/input";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
-import { FormInputError } from "@/components/input-error";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { formatDateToInputValue } from "@/lib/utils";
+import { cn, formatDateToInputValue } from "@/lib/utils";
 import {
   documentMetaFormSchema,
   type DocumentMetaForm,
@@ -14,6 +12,7 @@ import {
 import { useUpdateDocumentMetaMutation } from "@/lib/queries/documents";
 import { useAutoSaveForm } from "@/lib/hooks/use-auto-save-form";
 import { EditorStatusIndicator } from "@/components/editor-status";
+import { InputErrorTooltip } from "@/components/input-error-tooltip";
 
 type DocumentMetaEditorProps = {
   documentId: string;
@@ -53,41 +52,60 @@ export function DocumentMetaEditor({
   });
 
   return (
-    <TooltipProvider>
-      <div className="flex flex-col gap-6 rounded-2xl border bg-card p-6 md:p-8 shadow-xs text-card-foreground">
+    <div className="flex flex-col gap-4">
+      <div className="flex items-center justify-between">
+        <h3 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+          Document Details
+        </h3>
         <EditorStatusIndicator status={status} errorMessage={errorMessage} />
-        <FieldGroup className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <Field data-invalid={!!errors.title}>
-            <FieldLabel className="text-xs">Title</FieldLabel>
+      </div>
+
+      <FieldGroup className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+        <Field className="sm:col-span-2" data-invalid={!!errors.title}>
+          <FieldLabel className="text-xs text-muted-foreground font-medium">
+            Title
+          </FieldLabel>
+          <div className="relative flex items-center">
             <Input
               {...register("title")}
               placeholder="Document title"
               aria-invalid={!!errors.title}
+              className={cn(errors.title && "pr-8")}
             />
-            {errors.title && <FormInputError errors={[errors.title]} />}
-          </Field>
+            <InputErrorTooltip error={errors.title} />
+          </div>
+        </Field>
 
-          <Field data-invalid={!!errors.customer}>
-            <FieldLabel className="text-xs">Customer Name</FieldLabel>
+        <Field className="sm:col-span-1" data-invalid={!!errors.customer}>
+          <FieldLabel className="text-xs text-muted-foreground font-medium">
+            Customer Name
+          </FieldLabel>
+          <div className="relative flex items-center">
             <Input
               {...register("customer")}
               placeholder="Customer name"
               aria-invalid={!!errors.customer}
+              className={cn(errors.customer && "pr-8")}
             />
-            {errors.customer && <FormInputError errors={[errors.customer]} />}
-          </Field>
+            <InputErrorTooltip error={errors.customer} />
+          </div>
+        </Field>
 
-          <Field className="sm:col-span-2" data-invalid={!!errors.issueDate}>
-            <FieldLabel className="text-xs">Issue Date</FieldLabel>
+        <Field className="sm:col-span-1" data-invalid={!!errors.issueDate}>
+          <FieldLabel className="text-xs text-muted-foreground font-medium">
+            Issue Date
+          </FieldLabel>
+          <div className="relative flex items-center">
             <Input
               {...register("issueDate")}
               type="date"
               aria-invalid={!!errors.issueDate}
+              className={cn(errors.issueDate && "pr-8")}
             />
-            {errors.issueDate && <FormInputError errors={[errors.issueDate]} />}
-          </Field>
-        </FieldGroup>
-      </div>
-    </TooltipProvider>
+            <InputErrorTooltip error={errors.issueDate} />
+          </div>
+        </Field>
+      </FieldGroup>
+    </div>
   );
 }
