@@ -62,7 +62,7 @@ export function DashboardContent() {
   const isSummaryLoading = isLoading || isFetching || isPlaceholderData;
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex flex-col gap-8 pr-5">
       <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h2 className="text-lg font-semibold">Dashboard</h2>
