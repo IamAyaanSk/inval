@@ -5,7 +5,10 @@ type DocumentData = GetDocumentByIdApiResponse["data"];
 
 export function DocumentPreview({ document }: { document: DocumentData }) {
   return (
-    <div className="flex flex-col rounded-2xl border bg-card shadow-xs text-card-foreground overflow-hidden">
+    <div
+      id="printable-document"
+      className="flex flex-col rounded-2xl border bg-card shadow-xs text-card-foreground overflow-hidden"
+    >
       <div className="p-6 md:p-8 flex flex-col gap-6">
         <div className="flex flex-col gap-0.5">
           <h1 className="text-2xl md:text-3xl font-black uppercase tracking-tight text-foreground">

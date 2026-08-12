@@ -9,7 +9,7 @@ import { ErrorAlert } from "@/components/error-alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Printer } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function DocumentDetailView({ documentId }: { documentId: string }) {
@@ -48,6 +48,17 @@ export function DocumentDetailView({ documentId }: { documentId: string }) {
                 className="md:hidden text-xs h-7 px-2.5"
               >
                 {showPreviewMobile ? "Hide Preview" : "Show Preview"}
+              </Button>
+            )}
+
+            {isFinalized && (
+              <Button
+                type="button"
+                size="sm"
+                onClick={() => window.print()}
+                className="text-xs h-7 px-2.5 gap-1.5"
+              >
+                <Printer className="size-3.5" /> Print
               </Button>
             )}
 
