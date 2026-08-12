@@ -2,17 +2,23 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useDocumentDetailQuery } from "@/lib/queries/documents";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import {
+  useDocumentDetailQuery,
+  useDuplicateDocumentMutation,
+} from "@/lib/queries/documents";
 import { DocumentPreview } from "@/components/documents/preview";
 import { DocumentEditor } from "@/components/documents/editor";
 import { ErrorAlert } from "@/components/error-alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Printer } from "lucide-react";
+import { ArrowLeft, Copy, Loader2, Printer } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export function DocumentDetailView({ documentId }: { documentId: string }) {
+  const router = useRouter();
   const [showPreviewMobile, setShowPreviewMobile] = useState(false);
 
   const {
@@ -22,7 +28,24 @@ export function DocumentDetailView({ documentId }: { documentId: string }) {
     error,
   } = useDocumentDetailQuery(documentId);
 
+  const duplicateMutation = useDuplicateDocumentMutation();
+
   const isFinalized = document?.status === "FINALIZED";
+
+  const handleDuplicate = () => {
+    if (!document) return;
+    duplicateMutation.mutate(document.id, {
+      onSuccess: (data) => {
+        toast.success("Document duplicated successfully");
+        router.push(`/dashboard/documents/${data.id}`);
+      },
+      onError: (err) => {
+        toast.error(
+          err instanceof Error ? err.message : "Failed to duplicate document",
+        );
+      },
+    });
+  };
 
   return (
     <div className="flex flex-col gap-6">
@@ -50,6 +73,22 @@ export function DocumentDetailView({ documentId }: { documentId: string }) {
                 {showPreviewMobile ? "Hide Preview" : "Show Preview"}
               </Button>
             )}
+
+            <Button
+              type="button"
+              size="sm"
+              variant="outline"
+              onClick={handleDuplicate}
+              disabled={duplicateMutation.isPending}
+              className="text-xs h-7 px-2.5 gap-1.5"
+            >
+              {duplicateMutation.isPending ? (
+                <Loader2 className="size-3.5 animate-spin" />
+              ) : (
+                <Copy className="size-3.5" />
+              )}
+              Duplicate
+            </Button>
 
             {isFinalized && (
               <Button

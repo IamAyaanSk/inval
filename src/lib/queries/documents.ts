@@ -214,3 +214,30 @@ export function useFinalizeDocumentMutation() {
     },
   });
 }
+
+async function duplicateDocument(documentId: string) {
+  const data = await apiFetch(`/api/documents/${documentId}/duplicate`, {
+    method: "POST",
+  });
+
+  const parsed = createDocumentApiResponseSchema.parse(data);
+  return parsed.data;
+}
+
+export function useDuplicateDocumentMutation() {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (documentId: string) => duplicateDocument(documentId),
+    onSuccess: async () => {
+      await Promise.all([
+        queryClient.invalidateQueries({
+          queryKey: documentQueryKeys.lists(),
+        }),
+        queryClient.invalidateQueries({
+          queryKey: documentQueryKeys.summaries(),
+        }),
+      ]);
+    },
+  });
+}
