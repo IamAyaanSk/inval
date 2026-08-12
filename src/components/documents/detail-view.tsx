@@ -17,6 +17,85 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Copy, Loader2, Printer } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+function DocumentDetailSkeleton() {
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+      <div className="hidden md:flex md:col-span-5 flex-col rounded-2xl border bg-card overflow-hidden shadow-xs">
+        <div className="p-6 md:p-8 flex flex-col gap-6">
+          <div className="flex items-start justify-between">
+            <div className="flex flex-col gap-2">
+              <Skeleton className="h-7 w-48 rounded-lg" />
+              <Skeleton className="h-3.5 w-20 rounded-md" />
+            </div>
+            <Skeleton className="h-5 w-16 rounded-full" />
+          </div>
+
+          <div className="flex flex-col gap-1.5 pt-1">
+            <Skeleton className="h-3 w-16 rounded-md" />
+            <Skeleton className="h-4 w-36 rounded-md" />
+          </div>
+
+          <div className="rounded-xl border overflow-hidden mt-1 flex flex-col divide-y divide-border/40">
+            <Skeleton className="h-9 w-full bg-muted/60" />
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-10 w-full" />
+          </div>
+
+          <div className="flex flex-col items-end gap-2 pt-1">
+            <Skeleton className="h-3.5 w-48 rounded-md" />
+            <Skeleton className="h-3.5 w-48 rounded-md" />
+            <Skeleton className="h-3.5 w-48 rounded-md" />
+          </div>
+        </div>
+
+        <div className="h-20 bg-primary/20 p-6 flex items-center justify-between mt-auto">
+          <div className="flex flex-col gap-1.5">
+            <Skeleton className="h-3.5 w-28 bg-primary-foreground/30" />
+            <Skeleton className="h-3 w-36 bg-primary-foreground/20" />
+          </div>
+          <Skeleton className="h-8 w-32 bg-primary-foreground/40" />
+        </div>
+      </div>
+
+      <div className="md:col-span-7 flex flex-col gap-6 rounded-2xl border bg-card p-6 md:p-8 shadow-xs">
+        <div className="flex items-center justify-between pb-4 border-b">
+          <div className="flex flex-col gap-1.5">
+            <Skeleton className="h-5 w-36 rounded-md" />
+            <Skeleton className="h-3 w-48 rounded-md" />
+          </div>
+          <Skeleton className="h-9 w-36 rounded-xl" />
+        </div>
+
+        <div className="flex flex-col gap-3">
+          <Skeleton className="h-4 w-28 rounded-md" />
+          <div className="grid grid-cols-1 sm:grid-cols-4 gap-3">
+            <Skeleton className="sm:col-span-2 h-9 w-full rounded-lg" />
+            <Skeleton className="sm:col-span-1 h-9 w-full rounded-lg" />
+            <Skeleton className="sm:col-span-1 h-9 w-full rounded-lg" />
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-4 pt-4 border-t">
+          <Skeleton className="h-4 w-28 rounded-md" />
+          <div className="flex flex-col gap-3 bg-muted/40 p-3 rounded-2xl">
+            <Skeleton className="h-10 w-full rounded-xl bg-background/80" />
+            <Skeleton className="h-10 w-full rounded-xl bg-background/80" />
+            <Skeleton className="h-10 w-full rounded-xl bg-background/80" />
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-3 pt-6 border-t">
+          <Skeleton className="h-4 w-32 rounded-md" />
+          <Skeleton className="h-3.5 w-full rounded-md" />
+          <Skeleton className="h-3.5 w-full rounded-md" />
+          <Skeleton className="h-5 w-full rounded-md mt-2" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function DocumentDetailView({ documentId }: { documentId: string }) {
   const router = useRouter();
   const [showPreviewMobile, setShowPreviewMobile] = useState(false);
@@ -121,18 +200,7 @@ export function DocumentDetailView({ documentId }: { documentId: string }) {
       )}
 
       {isLoading || !document ? (
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-8">
-          <div className="md:col-span-5 lg:col-span-5 flex flex-col gap-4 rounded-2xl border p-8">
-            <Skeleton className="h-8 w-48" />
-            <Skeleton className="h-4 w-32" />
-            <Skeleton className="h-64 w-full mt-4" />
-          </div>
-          <div className="md:col-span-7 lg:col-span-7 flex flex-col gap-4 rounded-2xl border p-8">
-            <Skeleton className="h-8 w-48" />
-            <Skeleton className="h-32 w-full" />
-            <Skeleton className="h-48 w-full" />
-          </div>
-        </div>
+        <DocumentDetailSkeleton />
       ) : document.status === "DRAFT" ? (
         <div className="grid grid-cols-1 md:grid-cols-12 lg:grid-cols-12 gap-8 items-start">
           <div
