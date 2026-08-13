@@ -1,11 +1,14 @@
 "use client";
 
 import { useState } from "react";
+import { Controller, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
+import { InputErrorTooltip } from "@/components/input-error-tooltip";
 import {
   Dialog,
   DialogContent,
@@ -22,6 +25,10 @@ import {
   useDeleteApiKeyMutation,
 } from "@/lib/queries/api-keys";
 import { formatDate } from "@/lib/utils";
+import {
+  createApiKeyFormSchema,
+  type CreateApiKeyFormValues,
+} from "@/lib/validations/api-keys";
 
 export function ApiKeysView() {
   const { data: apiKeys, isLoading, isError, error } = useApiKeysQuery();
@@ -29,23 +36,32 @@ export function ApiKeysView() {
   const deleteMutation = useDeleteApiKeyMutation();
 
   const [createDialogOpen, setCreateDialogOpen] = useState(false);
-  const [keyName, setKeyName] = useState("");
   const [createdKey, setCreatedKey] = useState<string | null>(null);
   const [copiedKey, setCopiedKey] = useState(false);
   const [copiedCurl, setCopiedCurl] = useState(false);
 
-  const handleCreateKey = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!keyName.trim()) {
-      toast.error("Please enter a key name");
-      return;
-    }
+  const form = useForm<CreateApiKeyFormValues>({
+    resolver: zodResolver(createApiKeyFormSchema),
+    defaultValues: {
+      name: "",
+    },
+  });
 
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { isSubmitting },
+  } = form;
+
+  const onSubmit = async (values: CreateApiKeyFormValues) => {
     try {
-      const res = await createMutation.mutateAsync({ name: keyName.trim() });
+      const res = await createMutation.mutateAsync({
+        name: values.name.trim(),
+      });
       if (res?.key) {
         setCreatedKey(res.key);
-        setKeyName("");
+        reset();
         toast.success("API key created successfully");
       }
     } catch (err) {
@@ -80,9 +96,14 @@ export function ApiKeysView() {
   const sampleCurl = `curl -X GET "${typeof window !== "undefined" ? window.location.origin : ""}/api/documents" \\
   -H "x-api-key: ${createdKey || "<YOUR_API_KEY>"}"`;
 
+  const handleOpenDialog = () => {
+    setCreatedKey(null);
+    reset();
+    setCreateDialogOpen(true);
+  };
+
   return (
     <div className="flex flex-col gap-8">
-      {/* Top Header matching Dashboard */}
       <div className="flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
         <div>
           <h2 className="text-lg font-semibold">API Keys</h2>
@@ -91,14 +112,7 @@ export function ApiKeysView() {
           </p>
         </div>
 
-        <Button
-          type="button"
-          onClick={() => {
-            setCreatedKey(null);
-            setKeyName("");
-            setCreateDialogOpen(true);
-          }}
-        >
+        <Button type="button" onClick={handleOpenDialog}>
           Create New Key
         </Button>
       </div>
@@ -107,7 +121,6 @@ export function ApiKeysView() {
         <ErrorAlert error={error} fallbackMessage="Failed to load API keys" />
       )}
 
-      {/* Active Keys Section */}
       <div className="flex flex-col gap-8 px-2">
         <div className="flex flex-col gap-0.5 items-baseline">
           <h3 className="text-lg font-semibold">Active API Keys</h3>
@@ -133,11 +146,7 @@ export function ApiKeysView() {
               type="button"
               size="sm"
               variant="outline"
-              onClick={() => {
-                setCreatedKey(null);
-                setKeyName("");
-                setCreateDialogOpen(true);
-              }}
+              onClick={handleOpenDialog}
               className="text-xs mt-2"
             >
               Create First Key
@@ -187,7 +196,6 @@ export function ApiKeysView() {
         )}
       </div>
 
-      {/* Usage Guide */}
       <div className="flex flex-col gap-4 px-2">
         <div className="flex items-center justify-between">
           <div className="flex flex-col gap-0.5 items-baseline">
@@ -213,7 +221,6 @@ export function ApiKeysView() {
         </pre>
       </div>
 
-      {/* Create Key Dialog */}
       <Dialog open={createDialogOpen} onOpenChange={setCreateDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
@@ -261,6 +268,7 @@ export function ApiKeysView() {
                   onClick={() => {
                     setCreateDialogOpen(false);
                     setCreatedKey(null);
+                    reset();
                   }}
                 >
                   Done
@@ -268,26 +276,40 @@ export function ApiKeysView() {
               </DialogFooter>
             </div>
           ) : (
-            <form onSubmit={handleCreateKey}>
+            <form onSubmit={handleSubmit(onSubmit)} noValidate>
               <FieldGroup className="py-2">
-                <Field>
-                  <FieldLabel htmlFor="api-key-name" className="text-xs">
-                    Key Name
-                  </FieldLabel>
-                  <Input
-                    id="api-key-name"
-                    placeholder="e.g. Development Key, Mobile App"
-                    value={keyName}
-                    onChange={(e) => setKeyName(e.target.value)}
-                    disabled={createMutation.isPending}
-                    autoFocus
-                  />
-                </Field>
+                <Controller
+                  name="name"
+                  control={control}
+                  render={({ field, fieldState }) => (
+                    <Field data-invalid={fieldState.invalid}>
+                      <FieldLabel htmlFor="api-key-name" className="text-xs">
+                        Key Name
+                      </FieldLabel>
+                      <div className="relative flex items-center">
+                        <Input
+                          {...field}
+                          id="api-key-name"
+                          placeholder="e.g. Development Key, Mobile App"
+                          disabled={createMutation.isPending || isSubmitting}
+                          aria-invalid={fieldState.invalid}
+                          autoFocus
+                        />
+                        <InputErrorTooltip error={fieldState.error} />
+                      </div>
+                    </Field>
+                  )}
+                />
               </FieldGroup>
 
               <DialogFooter className="mt-4" showCloseButton>
-                <Button type="submit" disabled={createMutation.isPending}>
-                  {createMutation.isPending ? "Creating..." : "Create Key"}
+                <Button
+                  type="submit"
+                  disabled={createMutation.isPending || isSubmitting}
+                >
+                  {createMutation.isPending || isSubmitting
+                    ? "Creating..."
+                    : "Create Key"}
                 </Button>
               </DialogFooter>
             </form>

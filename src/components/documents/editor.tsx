@@ -49,7 +49,6 @@ export function DocumentEditor({ document }: { document: DocumentData }) {
 
   return (
     <div className="flex flex-col gap-6 rounded-2xl bg-card pr-6 md:pr-8 text-card-foreground">
-      {/* Editor Header */}
       <div className="flex items-center justify-between pb-4 border-b">
         <div>
           <h2 className="text-base font-semibold">Document Editor</h2>
@@ -72,7 +71,6 @@ export function DocumentEditor({ document }: { document: DocumentData }) {
         </Button>
       </div>
 
-      {/* Metadata Section */}
       <DocumentMetaEditor
         documentId={document.id}
         documentMeta={{

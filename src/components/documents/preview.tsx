@@ -85,7 +85,6 @@ export function DocumentPreview({ document }: { document: DocumentData }) {
           </div>
         </div>
 
-        {/* Subtotals Summary Breakdown */}
         <div className="flex flex-col items-end gap-1.5 text-xs pt-1">
           <div className="flex justify-between w-56 text-muted-foreground">
             <span>SubTotal</span>
