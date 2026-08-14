@@ -241,7 +241,7 @@ While I built this to be production-ready and performant, here are key areas I w
 
 ## API Reference
 
-All API requests require authentication by passing an API key header (`x-api-key: <YOUR_API_KEY>` or `Authorization: Bearer <YOUR_API_KEY>`).
+All API requests require authentication by passing an API key header (`x-api-key: <YOUR_API_KEY>`.
 
 ### Documents
 

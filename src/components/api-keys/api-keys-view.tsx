@@ -203,8 +203,7 @@ export function ApiKeysView() {
           <div className="flex flex-col gap-0.5 items-baseline">
             <h3 className="text-lg font-semibold">API Usage</h3>
             <span className="text-xs text-muted-foreground">
-              Include your key in the x-api-key header or Authorization Bearer
-              header. View{" "}
+              Include your key in the x-api-key header header. View{" "}
               <a
                 href="https://github.com/IamAyaanSk/inval#api-reference"
                 target="_blank"
