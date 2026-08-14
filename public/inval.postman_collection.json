@@ -1,0 +1,451 @@
+{
+  "info": {
+    "_postman_id": "e4bdb726-5d09-475d-aebf-ecbd91095d85",
+    "name": "inval",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "15893367",
+    "_collection_link": "https://go.postman.co/collection/15893367-e4bdb726-5d09-475d-aebf-ecbd91095d85?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Documents",
+      "item": [
+        {
+          "name": "List Documents",
+          "request": {
+            "auth": {
+              "type": "inherit"
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/documents",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "documents"
+              ]
+            },
+            "description": "List all documents for the authenticated user"
+          },
+          "response": []
+        },
+        {
+          "name": "Create Document",
+          "request": {
+            "auth": {
+              "type": "inherit"
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/api/documents",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "documents"
+              ]
+            },
+            "description": "Create a new draft document"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Document",
+          "request": {
+            "auth": {
+              "type": "inherit"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{x-api-key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "documents",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Get document details including line items"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Document",
+          "request": {
+            "auth": {
+              "type": "inherit"
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{x-api-key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "documents",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Update document metadata (Draft only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Document",
+          "request": {
+            "auth": {
+              "type": "inherit"
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{x-api-key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "documents",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Delete document (Draft only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Finalize Document",
+          "request": {
+            "auth": {
+              "type": "inherit"
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{x-api-key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/:id/finalize",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "documents",
+                ":id",
+                "finalize"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Finalize document and lock totals (Draft only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Duplicate Document",
+          "request": {
+            "auth": {
+              "type": "inherit"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{x-api-key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/:id/duplicate",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "documents",
+                ":id",
+                "duplicate"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Duplicate document into a new draft"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Line Items",
+      "item": [
+        {
+          "name": "Add Line Item",
+          "request": {
+            "auth": {
+              "type": "inherit"
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{x-api-key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/:id/line-items",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "documents",
+                ":id",
+                "line-items"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Add a line item to a draft document"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Line Item",
+          "request": {
+            "auth": {
+              "type": "inherit"
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{x-api-key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/:id/line-items/:itemId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "documents",
+                ":id",
+                "line-items",
+                ":itemId"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                },
+                {
+                  "key": "itemId",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Update a line item (Draft only)"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Line Item",
+          "request": {
+            "auth": {
+              "type": "inherit"
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{x-api-key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/:id/line-items/:itemId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "documents",
+                ":id",
+                "line-items",
+                ":itemId"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": ""
+                },
+                {
+                  "key": "itemId",
+                  "value": ""
+                }
+              ]
+            },
+            "description": "Delete a line item (Draft only)"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Summary Report",
+      "item": [
+        {
+          "name": "Get Summary Report",
+          "request": {
+            "auth": {
+              "type": "inherit"
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "x-api-key",
+                "value": "{{x-api-key}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/documents/summary?from=&to=",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "api",
+                "documents",
+                "summary"
+              ],
+              "query": [
+                {
+                  "key": "from",
+                  "value": "",
+                  "description": "ISO date"
+                },
+                {
+                  "key": "to",
+                  "value": "",
+                  "description": "ISO date"
+                }
+              ]
+            },
+            "description": "Get aggregate totals for finalized documents in date range and document counts"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "apikey",
+    "apikey": [
+      {
+        "key": "key",
+        "value": "x-api-key",
+        "type": "string"
+      },
+      {
+        "key": "value",
+        "value": "{{x-api-key}}",
+        "type": "string"
+      },
+      {
+        "key": "in",
+        "value": "header",
+        "type": "string"
+      }
+    ]
+  },
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": ""
+    },
+    {
+      "key": "x-api-key",
+      "value": ""
+    }
+  ]
+}

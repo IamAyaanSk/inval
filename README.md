@@ -269,4 +269,8 @@ All API requests require authentication by passing an API key header (`x-api-key
 | :----- | :--------------------------------------- | :----------------------------------------------------------------------------- |
 | `GET`  | `/api/documents/summary?from=ISO&to=ISO` | Get aggregate totals for finalized documents in date range and document counts |
 
+### Postman Collection
+
+- [Download Postman Collection](inval.postman_collection.json)
+
 ---

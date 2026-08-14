@@ -30,7 +30,7 @@ import {
   type CreateApiKeyFormValues,
 } from "@/lib/validations/api-keys";
 
-import { ExternalLink } from "lucide-react";
+import { Download, ExternalLink } from "lucide-react";
 
 export function ApiKeysView() {
   const { data: apiKeys, isLoading, isError, error } = useApiKeysQuery();
@@ -114,9 +114,25 @@ export function ApiKeysView() {
           </p>
         </div>
 
-        <Button type="button" onClick={handleOpenDialog}>
-          Create New Key
-        </Button>
+        <div className="flex items-center gap-2.5">
+          <Button
+            nativeButton={false}
+            render={
+              <a
+                href="/inval.postman_collection.json"
+                download="inval.postman_collection.json"
+              />
+            }
+            variant="outline"
+            className="gap-1.5 text-xs h-9 px-3 border-border/60 text-muted-foreground hover:text-foreground"
+          >
+            <Download className="size-3.5" /> Postman Collection
+          </Button>
+
+          <Button type="button" onClick={handleOpenDialog}>
+            Create New Key
+          </Button>
+        </div>
       </div>
 
       {isError && (
@@ -203,7 +219,7 @@ export function ApiKeysView() {
           <div className="flex flex-col gap-0.5 items-baseline">
             <h3 className="text-lg font-semibold">API Usage</h3>
             <span className="text-xs text-muted-foreground">
-              Include your key in the x-api-key header header. View{" "}
+              Include your key in the <code className="font-mono text-xs bg-muted px-1.5 py-0.5 rounded">x-api-key</code> header. View{" "}
               <a
                 href="https://github.com/IamAyaanSk/inval#api-reference"
                 target="_blank"
@@ -211,7 +227,16 @@ export function ApiKeysView() {
                 className="text-primary font-medium underline hover:text-primary/80 inline-flex items-center gap-0.5"
               >
                 API Endpoints <ExternalLink className="size-3" />
+              </a>{" "}
+              or download the{" "}
+              <a
+                href="/inval.postman_collection.json"
+                download="inval.postman_collection.json"
+                className="text-primary font-medium underline hover:text-primary/80 inline-flex items-center gap-0.5"
+              >
+                Postman Collection <Download className="size-3" />
               </a>
+              .
             </span>
           </div>
           <Button
