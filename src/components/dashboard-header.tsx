@@ -44,7 +44,7 @@ export function DashboardHeader({ userName }: { userName?: string | null }) {
       </div>
 
       <div className="flex items-center gap-2.5">
-        <div className="hidden sm:flex items-center gap-2.5">
+        <div className="hidden lg:flex items-center gap-2">
           <Button
             variant="outline"
             size="sm"

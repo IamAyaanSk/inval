@@ -128,26 +128,28 @@ export function DocumentDetailView({ documentId }: { documentId: string }) {
 
   return (
     <div className="flex flex-col gap-6">
-      <div className="flex items-center justify-between gap-2">
+      <div className="flex flex-wrap items-center justify-between gap-2.5">
         <Button
           nativeButton={false}
           render={<Link href="/dashboard/documents" />}
           variant="ghost"
           size="sm"
-          className="gap-1.5 text-xs text-muted-foreground hover:text-foreground"
+          className="gap-1.5 text-xs text-muted-foreground hover:text-foreground px-2 sm:px-3 h-8"
         >
-          <ArrowLeft className="size-4" /> Back to Documents
+          <ArrowLeft className="size-4 shrink-0" />
+          <span className="hidden sm:inline">Back to Documents</span>
+          <span className="sm:hidden">Back</span>
         </Button>
 
         {document && (
-          <div className="flex items-center gap-2.5 pr-6 md:pr-8">
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
             {document.status === "DRAFT" && (
               <Button
                 type="button"
                 size="sm"
                 variant="outline"
                 onClick={() => setShowPreviewMobile((prev) => !prev)}
-                className="md:hidden text-xs h-7 px-2.5"
+                className="md:hidden text-xs h-8 px-2.5"
               >
                 {showPreviewMobile ? "Hide Preview" : "Show Preview"}
               </Button>
@@ -159,14 +161,15 @@ export function DocumentDetailView({ documentId }: { documentId: string }) {
               variant="outline"
               onClick={handleDuplicate}
               disabled={duplicateMutation.isPending}
-              className="text-xs h-7 px-2.5 gap-1.5"
+              title="Duplicate Document"
+              className="text-xs h-8 px-2.5 gap-1.5"
             >
               {duplicateMutation.isPending ? (
                 <Loader2 className="size-3.5 animate-spin" />
               ) : (
                 <Copy className="size-3.5" />
               )}
-              Duplicate
+              <span className="hidden sm:inline">Duplicate</span>
             </Button>
 
             {isFinalized && (
@@ -174,16 +177,18 @@ export function DocumentDetailView({ documentId }: { documentId: string }) {
                 type="button"
                 size="sm"
                 onClick={() => window.print()}
-                className="text-xs h-7 px-2.5 gap-1.5"
+                title="Print Document"
+                className="text-xs h-8 px-2.5 gap-1.5"
               >
-                <Printer className="size-3.5" /> Print
+                <Printer className="size-3.5" />
+                <span className="hidden sm:inline">Print</span>
               </Button>
             )}
 
             <Badge
               variant={isFinalized ? "default" : "outline"}
               className={cn(
-                "text-[10px] px-2.5 py-0.5 font-semibold tracking-wide uppercase",
+                "text-[10px] px-2 py-0.5 font-semibold tracking-wide uppercase h-6",
                 isFinalized
                   ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
                   : "bg-muted text-muted-foreground border-border",

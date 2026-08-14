@@ -24,7 +24,7 @@ export default async function DashboardLayout({
       <SidebarInset>
         <DashboardHeader userName={session.user.name} />
 
-        <main className="flex flex-1 flex-col gap-4 mx-4 md:mx-0 md:ml-8 mt-4 px-2 pb-4">
+        <main className="flex flex-1 flex-col gap-4 px-4 md:px-8 py-4 min-w-0 overflow-x-hidden">
           {children}
         </main>
       </SidebarInset>
