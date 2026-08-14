@@ -1,14 +1,26 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Copy, FileText, Loader2 } from "lucide-react";
+import { Copy, FileText, Loader2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { formatDate, formatCurrency, cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { useDuplicateDocumentMutation } from "@/lib/queries/documents";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  useDuplicateDocumentMutation,
+  useDeleteDocumentMutation,
+} from "@/lib/queries/documents";
 
 type DocumentCardProps = {
   id: string;
@@ -28,9 +40,17 @@ export function DocumentCard({
   grandTotal,
 }: DocumentCardProps) {
   const router = useRouter();
-  const duplicateMutation = useDuplicateDocumentMutation();
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [loading, setIsLoading] = useState(false);
 
-  const handleDuplicate = () => {
+  const duplicateMutation = useDuplicateDocumentMutation();
+  const deleteMutation = useDeleteDocumentMutation();
+
+  const handleDuplicate = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsLoading(true);
+
     duplicateMutation.mutate(id, {
       onSuccess: (data) => {
         toast.success(`Duplicated "${title}" successfully`);
@@ -41,65 +61,139 @@ export function DocumentCard({
           err instanceof Error ? err.message : "Failed to duplicate document",
         );
       },
+      onSettled: () => setIsLoading(false),
+    });
+  };
+
+  const handleDeleteClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setDeleteDialogOpen(true);
+  };
+
+  const confirmDelete = () => {
+    setIsLoading(true);
+    deleteMutation.mutate(id, {
+      onSuccess: () => {
+        toast.success(`Deleted "${title}"`);
+        setDeleteDialogOpen(false);
+      },
+      onError: (err) => {
+        toast.error(
+          err instanceof Error ? err.message : "Failed to delete document",
+        );
+      },
+      onSettled: () => setIsLoading(false),
     });
   };
 
   return (
-    <div className="relative group flex w-40 shrink-0 flex-col overflow-hidden rounded-xl border transition-all hover:ring-primary/40 hover:shadow-md bg-card">
-      <Link
-        href={`/dashboard/documents/${id}`}
-        className="flex flex-col w-full h-full"
-      >
-        <div className="relative flex h-48 items-center justify-center bg-muted/40 transition-colors group-hover:bg-primary/5">
-          <Button
-            type="button"
-            size="icon-xs"
-            variant="secondary"
-            onClick={handleDuplicate}
-            disabled={duplicateMutation.isPending}
-            title="Duplicate document"
-            className="absolute top-2 left-2 z-10 size-7 rounded-lg bg-background/90 text-foreground hover:bg-background shadow-xs opacity-0 group-hover:opacity-100 transition-opacity"
-          >
-            {duplicateMutation.isPending ? (
-              <Loader2 className="size-3.5 animate-spin" />
-            ) : (
-              <Copy className="size-3.5" />
-            )}
-          </Button>
-
-          {status && (
-            <Badge
-              variant={status === "FINALIZED" ? "default" : "outline"}
-              className={cn(
-                "absolute top-2 right-2 text-[10px] px-1.5 py-0 font-semibold tracking-wide pointer-events-none",
-                status === "FINALIZED"
-                  ? "bg-primary text-primary-foreground border-transparent"
-                  : "bg-background/90 text-muted-foreground border-border",
-              )}
+    <>
+      <div className="relative group flex w-40 shrink-0 flex-col overflow-hidden rounded-xl border transition-all hover:ring-primary/40 hover:shadow-md bg-card">
+        <Link
+          href={`/dashboard/documents/${id}`}
+          className="flex flex-col w-full h-full"
+        >
+          <div className="relative flex h-48 items-center justify-center bg-muted/40 transition-colors group-hover:bg-primary/5">
+            <Button
+              type="button"
+              size="icon-xs"
+              variant="secondary"
+              onClick={handleDuplicate}
+              disabled={duplicateMutation.isPending || loading}
+              title="Duplicate document"
+              className="absolute top-2 left-2 z-10 size-7 rounded-lg bg-background/90 text-foreground hover:bg-background shadow-xs opacity-0 group-hover:opacity-100 transition-opacity"
             >
-              {status === "FINALIZED" ? "Finalized" : "Draft"}
-            </Badge>
-          )}
+              {duplicateMutation.isPending ? (
+                <Loader2 className="size-3.5 animate-spin" />
+              ) : (
+                <Copy className="size-3.5" />
+              )}
+            </Button>
 
-          <FileText className="size-10 text-muted-foreground/40 transition-colors group-hover:text-primary/40" />
-        </div>
-
-        <div className="flex flex-col gap-0.5 border-t px-3 py-2.5">
-          <p className="text-sm font-medium truncate">{title}</p>
-          <p className="text-xs text-muted-foreground truncate">{customer}</p>
-          <div className="flex items-center justify-between mt-1">
-            <span className="text-[10px] text-muted-foreground">
-              {formatDate(issueDate)}
-            </span>
-            {grandTotal && (
-              <span className="text-[10px] font-semibold">
-                {formatCurrency(grandTotal)}
-              </span>
+            {status === "DRAFT" && (
+              <Button
+                type="button"
+                size="icon-xs"
+                variant="secondary"
+                onClick={handleDeleteClick}
+                disabled={deleteMutation.isPending || loading}
+                title="Delete document"
+                className="absolute top-2 left-10 z-10 size-7 rounded-lg bg-background/90 text-destructive hover:bg-destructive/10 hover:text-destructive shadow-xs opacity-0 group-hover:opacity-100 transition-opacity"
+              >
+                {deleteMutation.isPending ? (
+                  <Loader2 className="size-3.5 animate-spin" />
+                ) : (
+                  <Trash2 className="size-3.5" />
+                )}
+              </Button>
             )}
+
+            {status && (
+              <Badge
+                variant={status === "FINALIZED" ? "default" : "outline"}
+                className={cn(
+                  "absolute top-2 right-2 text-[10px] px-1.5 py-0 font-semibold tracking-wide pointer-events-none",
+                  status === "FINALIZED"
+                    ? "bg-primary text-primary-foreground border-transparent"
+                    : "bg-background/90 text-muted-foreground border-border",
+                )}
+              >
+                {status === "FINALIZED" ? "Finalized" : "Draft"}
+              </Badge>
+            )}
+
+            <FileText className="size-10 text-muted-foreground/40 transition-colors group-hover:text-primary/40" />
           </div>
-        </div>
-      </Link>
-    </div>
+
+          <div className="flex flex-col gap-0.5 border-t px-3 py-2.5">
+            <p className="text-sm font-medium truncate">{title}</p>
+            <p className="text-xs text-muted-foreground truncate">{customer}</p>
+            <div className="flex items-center justify-between mt-1">
+              <span className="text-[10px] text-muted-foreground">
+                {formatDate(issueDate)}
+              </span>
+              {grandTotal && (
+                <span className="text-[10px] font-semibold">
+                  {formatCurrency(grandTotal)}
+                </span>
+              )}
+            </div>
+          </div>
+        </Link>
+      </div>
+
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Delete Document</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete &quot;{title}&quot;? This action
+              cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="mt-4 gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setDeleteDialogOpen(false)}
+              disabled={deleteMutation.isPending}
+            >
+              Cancel
+            </Button>
+
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={confirmDelete}
+              disabled={deleteMutation.isPending}
+            >
+              {deleteMutation.isPending ? "Deleting..." : "Delete Document"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
 

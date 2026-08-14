@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import {
   useDocumentDetailQuery,
   useDuplicateDocumentMutation,
+  useDeleteDocumentMutation,
 } from "@/lib/queries/documents";
 import { DocumentPreview } from "@/components/documents/preview";
 import { DocumentEditor } from "@/components/documents/editor";
@@ -14,7 +15,15 @@ import { ErrorAlert } from "@/components/error-alert";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Copy, Loader2, Printer } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { ArrowLeft, Copy, Loader2, Printer, Trash2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 function DocumentDetailSkeleton() {
@@ -99,6 +108,7 @@ function DocumentDetailSkeleton() {
 export function DocumentDetailView({ documentId }: { documentId: string }) {
   const router = useRouter();
   const [showPreviewMobile, setShowPreviewMobile] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
 
   const {
     data: document,
@@ -108,6 +118,7 @@ export function DocumentDetailView({ documentId }: { documentId: string }) {
   } = useDocumentDetailQuery(documentId);
 
   const duplicateMutation = useDuplicateDocumentMutation();
+  const deleteMutation = useDeleteDocumentMutation();
 
   const isFinalized = document?.status === "FINALIZED";
 
@@ -121,6 +132,22 @@ export function DocumentDetailView({ documentId }: { documentId: string }) {
       onError: (err) => {
         toast.error(
           err instanceof Error ? err.message : "Failed to duplicate document",
+        );
+      },
+    });
+  };
+
+  const handleDeleteDocument = () => {
+    if (!document) return;
+    deleteMutation.mutate(document.id, {
+      onSuccess: () => {
+        toast.success("Document deleted successfully");
+        setDeleteDialogOpen(false);
+        router.push("/dashboard/documents");
+      },
+      onError: (err) => {
+        toast.error(
+          err instanceof Error ? err.message : "Failed to delete document",
         );
       },
     });
@@ -171,6 +198,20 @@ export function DocumentDetailView({ documentId }: { documentId: string }) {
               )}
               <span className="hidden sm:inline">Duplicate</span>
             </Button>
+
+            {!isFinalized && (
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={() => setDeleteDialogOpen(true)}
+                title="Delete Document"
+                className="text-xs h-8 px-2.5 gap-1.5 text-destructive hover:text-destructive hover:bg-destructive/10 border-border/60 cursor-pointer"
+              >
+                <Trash2 className="size-3.5" />
+                <span className="hidden sm:inline">Delete</span>
+              </Button>
+            )}
 
             {isFinalized && (
               <Button
@@ -225,6 +266,39 @@ export function DocumentDetailView({ documentId }: { documentId: string }) {
           <DocumentPreview document={document} />
         </div>
       )}
+
+      {/* Delete Confirmation Modal */}
+      <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Delete Document</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete &quot;
+              {document?.title || "this document"}&quot;? This action cannot be
+              undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="mt-4 gap-2">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setDeleteDialogOpen(false)}
+              disabled={deleteMutation.isPending}
+            >
+              Cancel
+            </Button>
+
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={handleDeleteDocument}
+              disabled={deleteMutation.isPending}
+            >
+              {deleteMutation.isPending ? "Deleting..." : "Delete Document"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
