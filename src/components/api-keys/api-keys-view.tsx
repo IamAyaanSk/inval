@@ -30,6 +30,8 @@ import {
   type CreateApiKeyFormValues,
 } from "@/lib/validations/api-keys";
 
+import { ExternalLink } from "lucide-react";
+
 export function ApiKeysView() {
   const { data: apiKeys, isLoading, isError, error } = useApiKeysQuery();
   const createMutation = useCreateApiKeyMutation();
@@ -202,7 +204,15 @@ export function ApiKeysView() {
             <h3 className="text-lg font-semibold">API Usage</h3>
             <span className="text-xs text-muted-foreground">
               Include your key in the x-api-key header or Authorization Bearer
-              header
+              header. View{" "}
+              <a
+                href="https://github.com/IamAyaanSk/inval#api-reference"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary font-medium underline hover:text-primary/80 inline-flex items-center gap-0.5"
+              >
+                API Endpoints <ExternalLink className="size-3" />
+              </a>
             </span>
           </div>
           <Button
