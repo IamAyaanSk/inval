@@ -149,6 +149,8 @@ export function useCreateDocumentMutation() {
   });
 }
 
+const latestDocumentMetaUpdateVersions = new Map<string, number>();
+
 export function useUpdateDocumentMetaMutation() {
   const queryClient = useQueryClient();
 
@@ -160,7 +162,16 @@ export function useUpdateDocumentMetaMutation() {
       documentId: string;
       body: UpdateDocumentMetaApiRequestBody;
     }) => updateDocumentMeta(documentId, body),
-    onSuccess: async (data) => {
+    onMutate: ({ documentId }) => {
+      const version =
+        (latestDocumentMetaUpdateVersions.get(documentId) ?? 0) + 1;
+      latestDocumentMetaUpdateVersions.set(documentId, version);
+      return { version };
+    },
+    onSuccess: async (data, { documentId }, ctx) => {
+      if (ctx.version < (latestDocumentMetaUpdateVersions.get(documentId) ?? 0))
+        return;
+
       queryClient.setQueryData<DocumentDetailData>(
         documentQueryKeys.detail(data.id),
         (old) => {
@@ -172,6 +183,14 @@ export function useUpdateDocumentMetaMutation() {
       await queryClient.invalidateQueries({
         queryKey: documentQueryKeys.lists(),
       });
+    },
+    onSettled: (_data, _error, { documentId }, ctx) => {
+      if (
+        ctx &&
+        latestDocumentMetaUpdateVersions.get(documentId) === ctx.version
+      ) {
+        latestDocumentMetaUpdateVersions.delete(documentId);
+      }
     },
   });
 }

@@ -85,6 +85,8 @@ export function useCreateLineItemMutation(documentId: string) {
   });
 }
 
+const latestLineItemUpdateVersions = new Map<string, number>();
+
 export function useUpdateLineItemMutation(documentId: string) {
   const queryClient = useQueryClient();
 
@@ -96,7 +98,15 @@ export function useUpdateLineItemMutation(documentId: string) {
       lineItemId: string;
       body: UpdateLineItemRequestBody;
     }) => updateLineItem(documentId, lineItemId, body),
-    onSuccess: (data) => {
+    onMutate: ({ lineItemId }) => {
+      const version = (latestLineItemUpdateVersions.get(lineItemId) ?? 0) + 1;
+      latestLineItemUpdateVersions.set(lineItemId, version);
+      return { version };
+    },
+    onSuccess: (data, { lineItemId }, ctx) => {
+      if (ctx.version < (latestLineItemUpdateVersions.get(lineItemId) ?? 0))
+        return;
+
       queryClient.setQueryData<DocumentDetailData>(
         documentQueryKeys.detail(documentId),
         (old) => {
@@ -111,6 +121,11 @@ export function useUpdateLineItemMutation(documentId: string) {
           };
         },
       );
+    },
+    onSettled: (_data, _error, { lineItemId }, ctx) => {
+      if (ctx && latestLineItemUpdateVersions.get(lineItemId) === ctx.version) {
+        latestLineItemUpdateVersions.delete(lineItemId);
+      }
     },
   });
 }
