@@ -22,6 +22,12 @@ export function useAutoSaveForm<T extends FieldValues>({
   const [errorMessage, setErrorMessage] = useState<string>();
   const timerRef = useRef<NodeJS.Timeout | null>(null);
 
+  const onSaveRef = useRef(onSave);
+
+  useEffect(() => {
+    onSaveRef.current = onSave;
+  });
+
   const { watch, trigger, getValues } = form;
 
   useEffect(() => {
@@ -42,7 +48,7 @@ export function useAutoSaveForm<T extends FieldValues>({
         setErrorMessage(undefined);
 
         try {
-          await onSave(getValues());
+          await onSaveRef.current(getValues());
           setStatus("saved");
         } catch (err) {
           setStatus("error");
@@ -59,7 +65,7 @@ export function useAutoSaveForm<T extends FieldValues>({
         clearTimeout(timerRef.current);
       }
     };
-  }, [watch, trigger, getValues, onSave, setEditorHasError, debounceMs]);
+  }, [watch, trigger, getValues, setEditorHasError, debounceMs]);
 
   return { status, errorMessage };
 }

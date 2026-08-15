@@ -200,9 +200,8 @@ export function ApiKeysView() {
 
                 <Button
                   type="button"
-                  className="hidden group-hover:flex"
+                  className="hidden group-hover:flex transition-all"
                   size="icon-sm"
-                  nativeButton={false}
                   variant={"destructive"}
                   onClick={() => handleDeleteKey(key.id, key.name)}
                   disabled={deleteMutation.isPending}

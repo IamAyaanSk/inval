@@ -170,7 +170,7 @@ export function LineItemEditor({
 
                   <InputErrorTooltip
                     error={fieldState.error}
-                    className="right-9"
+                    className="right-16"
                   />
                 </div>
               </Field>

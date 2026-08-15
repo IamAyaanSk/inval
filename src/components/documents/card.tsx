@@ -96,13 +96,12 @@ export function DocumentCard({
         >
           <div className="relative flex h-48 items-center justify-center bg-muted/40 transition-colors group-hover:bg-primary/5">
             <Button
-              type="button"
               size="icon-xs"
               variant="secondary"
               onClick={handleDuplicate}
               disabled={duplicateMutation.isPending || loading}
               title="Duplicate document"
-              className="absolute top-2 left-2 z-10 size-7 rounded-lg bg-background/90 text-foreground hover:bg-background shadow-xs opacity-0 group-hover:opacity-100 transition-opacity"
+              className="absolute top-2 left-2 z-10 hidden group-hover:flex transition-all"
             >
               {duplicateMutation.isPending ? (
                 <Loader2 className="size-3.5 animate-spin" />
@@ -113,13 +112,12 @@ export function DocumentCard({
 
             {status === "DRAFT" && (
               <Button
-                type="button"
                 size="icon-xs"
-                variant="secondary"
+                variant="destructive"
                 onClick={handleDeleteClick}
                 disabled={deleteMutation.isPending || loading}
                 title="Delete document"
-                className="absolute top-2 left-10 z-10 size-7 rounded-lg bg-background/90 text-destructive hover:bg-destructive/10 hover:text-destructive shadow-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                className="absolute top-2 left-9 z-10 hidden group-hover:flex transition-all"
               >
                 {deleteMutation.isPending ? (
                   <Loader2 className="size-3.5 animate-spin" />
@@ -174,7 +172,6 @@ export function DocumentCard({
           </DialogHeader>
           <DialogFooter className="mt-4 gap-2">
             <Button
-              type="button"
               variant="outline"
               onClick={() => setDeleteDialogOpen(false)}
               disabled={deleteMutation.isPending}
@@ -183,7 +180,6 @@ export function DocumentCard({
             </Button>
 
             <Button
-              type="button"
               variant="destructive"
               onClick={confirmDelete}
               disabled={deleteMutation.isPending}
