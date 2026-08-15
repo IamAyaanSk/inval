@@ -30,7 +30,7 @@ import {
   type CreateApiKeyFormValues,
 } from "@/lib/validations/api-keys";
 
-import { Download, ExternalLink } from "lucide-react";
+import { Download, ExternalLink, Trash2 } from "lucide-react";
 
 export function ApiKeysView() {
   const { data: apiKeys, isLoading, isError, error } = useApiKeysQuery();
@@ -175,7 +175,7 @@ export function ApiKeysView() {
             {apiKeys.map((key) => (
               <div
                 key={key.id}
-                className="flex items-center justify-between gap-4 rounded-2xl border bg-card p-5 shadow-xs text-card-foreground transition-colors hover:border-foreground/20"
+                className="group flex items-center justify-between gap-4 rounded-2xl border bg-card p-5 shadow-xs text-card-foreground transition-colors hover:border-foreground/20"
               >
                 <div className="flex flex-col gap-1.5 min-w-0">
                   <div className="flex items-center gap-2">
@@ -200,13 +200,14 @@ export function ApiKeysView() {
 
                 <Button
                   type="button"
-                  size="sm"
-                  variant="ghost"
+                  className="hidden group-hover:flex"
+                  size="icon-sm"
+                  nativeButton={false}
+                  variant={"destructive"}
                   onClick={() => handleDeleteKey(key.id, key.name)}
                   disabled={deleteMutation.isPending}
-                  className="text-xs text-muted-foreground hover:text-destructive shrink-0"
                 >
-                  Delete
+                  <Trash2 />
                 </Button>
               </div>
             ))}
@@ -219,7 +220,11 @@ export function ApiKeysView() {
           <div className="flex flex-col gap-0.5 items-baseline">
             <h3 className="text-lg font-semibold">API Usage</h3>
             <span className="text-xs text-muted-foreground">
-              Include your key in the <code className="font-mono text-xs bg-muted px-1.5 py-0.5 rounded">x-api-key</code> header. View{" "}
+              Include your key in the{" "}
+              <code className="font-mono text-xs bg-muted px-1.5 py-0.5 rounded">
+                x-api-key
+              </code>{" "}
+              header. View{" "}
               <a
                 href="https://github.com/IamAyaanSk/inval#api-reference"
                 target="_blank"

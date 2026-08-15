@@ -176,7 +176,7 @@ export function DocumentDetailView({ documentId }: { documentId: string }) {
                 size="sm"
                 variant="outline"
                 onClick={() => setShowPreviewMobile((prev) => !prev)}
-                className="md:hidden text-xs h-8 px-2.5"
+                className="md:hidden"
               >
                 {showPreviewMobile ? "Hide Preview" : "Show Preview"}
               </Button>
@@ -189,7 +189,6 @@ export function DocumentDetailView({ documentId }: { documentId: string }) {
               onClick={handleDuplicate}
               disabled={duplicateMutation.isPending}
               title="Duplicate Document"
-              className="text-xs h-8 px-2.5 gap-1.5"
             >
               {duplicateMutation.isPending ? (
                 <Loader2 className="size-3.5 animate-spin" />
@@ -203,10 +202,9 @@ export function DocumentDetailView({ documentId }: { documentId: string }) {
               <Button
                 type="button"
                 size="sm"
-                variant="outline"
+                variant={"destructive"}
                 onClick={() => setDeleteDialogOpen(true)}
                 title="Delete Document"
-                className="text-xs h-8 px-2.5 gap-1.5 text-destructive hover:text-destructive hover:bg-destructive/10 border-border/60 cursor-pointer"
               >
                 <Trash2 className="size-3.5" />
                 <span className="hidden sm:inline">Delete</span>
@@ -228,12 +226,7 @@ export function DocumentDetailView({ documentId }: { documentId: string }) {
 
             <Badge
               variant={isFinalized ? "default" : "outline"}
-              className={cn(
-                "text-[10px] px-2 py-0.5 font-semibold tracking-wide uppercase h-6",
-                isFinalized
-                  ? "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20"
-                  : "bg-muted text-muted-foreground border-border",
-              )}
+              className="text-[10px] px-2 py-0.5 font-semibold tracking-wide uppercase h-6"
             >
               {isFinalized ? "Finalized" : "Draft"}
             </Badge>
@@ -267,7 +260,6 @@ export function DocumentDetailView({ documentId }: { documentId: string }) {
         </div>
       )}
 
-      {/* Delete Confirmation Modal */}
       <Dialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
         <DialogContent className="sm:max-w-md">
           <DialogHeader>

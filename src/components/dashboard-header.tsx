@@ -45,12 +45,7 @@ export function DashboardHeader({ userName }: { userName?: string | null }) {
 
       <div className="flex items-center gap-2.5">
         <div className="hidden lg:flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleDummyClick}
-            className="h-8 rounded-xl gap-1.5 text-xs text-foreground font-medium px-3 bg-background border-border/60 hover:bg-muted/40"
-          >
+          <Button variant="outline" size="sm" onClick={handleDummyClick}>
             <Globe className="size-3.5 text-muted-foreground" />
             <span>English</span>
           </Button>
@@ -59,18 +54,13 @@ export function DashboardHeader({ userName }: { userName?: string | null }) {
             variant="outline"
             size="sm"
             onClick={handleDummyClick}
-            className="h-8 rounded-xl gap-1.5 text-xs font-semibold px-3 border-purple-300 dark:border-purple-800 text-purple-600 dark:text-purple-400 bg-purple-500/5 hover:bg-purple-500/10"
+            className="border-purple-300 dark:border-purple-800 text-purple-600 dark:text-purple-400 bg-purple-500/5 hover:bg-purple-500/10 hover:text-purple-600 dark:hover:text-purple-400"
           >
             <Sparkles className="size-3.5" />
             <span>Enable Tour</span>
           </Button>
 
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={handleDummyClick}
-            className="h-8 rounded-xl gap-1.5 text-xs text-foreground font-medium px-3 bg-background border-border/60 hover:bg-muted/40"
-          >
+          <Button variant="outline" size="sm" onClick={handleDummyClick}>
             <Lightbulb className="size-3.5 text-muted-foreground" />
             <span>What&apos;s New?</span>
           </Button>

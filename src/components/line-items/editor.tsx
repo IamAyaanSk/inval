@@ -6,7 +6,7 @@ import {
   useDeleteLineItemMutation,
 } from "@/lib/queries/line-items";
 import { cn, formatCurrency } from "@/lib/utils";
-import { Field, FieldLabel } from "@/components/ui/field";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -20,6 +20,10 @@ import {
 import { useAutoSaveForm } from "@/lib/hooks/use-auto-save-form";
 import { EditorStatusIndicator } from "@/components/editor-status";
 import { InputErrorTooltip } from "@/components/input-error-tooltip";
+import {
+  NativeSelect,
+  NativeSelectOption,
+} from "@/components/ui/native-select";
 
 type LineItemEditorProps = {
   documentId: string;
@@ -144,61 +148,59 @@ export function LineItemEditor({
           )}
         />
 
-        <Controller
-          control={control}
-          name="discount"
-          render={({ field, fieldState }) => (
-            <Field className="col-span-2" data-invalid={fieldState.invalid}>
-              <FieldLabel className="text-[11px] hidden text-muted-foreground">
-                Discount
-              </FieldLabel>
+        <FieldGroup className="col-span-2 relative flex">
+          <Controller
+            control={control}
+            name="discount"
+            render={({ field, fieldState }) => (
+              <Field className="w-full" data-invalid={fieldState.invalid}>
+                <FieldLabel className="text-[11px] hidden text-muted-foreground">
+                  Discount
+                </FieldLabel>
 
-              <div className="relative flex items-center">
-                <Input
-                  {...field}
-                  type="text"
-                  inputMode="decimal"
+                <div className="flex items-center">
+                  <Input
+                    {...field}
+                    type="text"
+                    inputMode="decimal"
+                    disabled={disabled}
+                    aria-invalid={fieldState.invalid}
+                    className={cn(fieldState.error && "pr-14")}
+                  />
+
+                  <InputErrorTooltip
+                    error={fieldState.error}
+                    className="right-9"
+                  />
+                </div>
+              </Field>
+            )}
+          />
+
+          <Controller
+            control={control}
+            name="discountType"
+            render={({ field: typeField }) => (
+              <Field className="w-fit absolute top-0 right-0">
+                <FieldLabel className="text-[11px] hidden text-muted-foreground">
+                  Discount Type
+                </FieldLabel>
+                <NativeSelect
+                  {...typeField}
                   disabled={disabled}
-                  aria-invalid={fieldState.invalid}
-                  className={cn(fieldState.error && "pr-14")}
-                />
-
-                <InputErrorTooltip
-                  error={fieldState.error}
-                  className="right-9"
-                />
-
-                <Controller
-                  control={control}
-                  name="discountType"
-                  render={({ field: typeField }) => (
-                    <select
-                      {...typeField}
-                      disabled={disabled}
-                      className="
-                        h-full                        
-                        border-l                        
-                        bg-muted/40                                                
-                        text-xs
-                        font-semibold
-                        rounded-r-lg
-                        outline-none
-                        focus:bg-background
-                        transition-colors
-                        cursor-pointer
-                        absolute right-0 top-0
-                        px-1.5
-                      "
-                    >
-                      <option value={DiscountType.FIXED}>$</option>
-                      <option value={DiscountType.PERCENTAGE}>%</option>
-                    </select>
-                  )}
-                />
-              </div>
-            </Field>
-          )}
-        />
+                  aria-label="Discount type"
+                >
+                  <NativeSelectOption value={DiscountType.FIXED}>
+                    $
+                  </NativeSelectOption>
+                  <NativeSelectOption value={DiscountType.PERCENTAGE}>
+                    %
+                  </NativeSelectOption>
+                </NativeSelect>
+              </Field>
+            )}
+          />
+        </FieldGroup>
 
         <Controller
           control={control}
