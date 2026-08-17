@@ -125,17 +125,17 @@ export function DashboardContent() {
               <SummaryCard
                 title="Grand Total"
                 metricString={formatCurrency(data.totals.grandTotal)}
-                description={`${data.counts.finalized} finalized document${data.counts.finalized !== 1 ? "s" : ""}`}
+                description={`Across ${data.counts.finalized} finalized document${data.counts.finalized !== 1 ? "s" : ""}`}
               />
               <SummaryCard
                 title="Total Tax"
                 metricString={formatCurrency(data.totals.totalTax)}
-                description="Across finalized documents"
+                description={`Across ${data.counts.finalized} finalized document${data.counts.finalized !== 1 ? "s" : ""}`}
               />
               <SummaryCard
                 title="Total Discount"
                 metricString={formatCurrency(data.totals.totalDiscount)}
-                description="Across finalized documents"
+                description={`Across ${data.counts.finalized} finalized document${data.counts.finalized !== 1 ? "s" : ""}`}
               />
               <SummaryCard
                 title="Documents"
