@@ -81,13 +81,24 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="p-0 pb-8 pt-4 border-t-2 border-foreground/10">
+      <SidebarFooter className="border-t-2 border-foreground/10 px-2 pb-6 pt-4">
         <SidebarMenu>
-          <SidebarMenuItem className="flex gap-2 text-foreground items-center justify-center font-semibold">
+          <SidebarMenuItem className="flex items-center justify-center gap-2 text-foreground font-semibold">
             <CircleQuestionMark className="items-start" size={20} />
             <span className="text-sm">Your Support Team</span>
           </SidebarMenuItem>
         </SidebarMenu>
+        <p className="mt-4 text-center text-xs font-medium text-muted-foreground">
+          Made with <span aria-hidden="true">❤️</span> by{" "}
+          <a
+            href="https://ayaan.dev"
+            target="_blank"
+            rel="noreferrer"
+            className="text-foreground underline-offset-4 transition-colors hover:text-primary hover:underline"
+          >
+            Ayaan
+          </a>
+        </p>
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
