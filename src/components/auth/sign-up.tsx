@@ -1,7 +1,6 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
@@ -24,8 +23,6 @@ export function SignUpForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const router = useRouter();
-
   const form = useForm<SignUpInput>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -50,9 +47,11 @@ export function SignUpForm({
       return;
     }
 
-    toast.success(
-      `Account created. Please contact ${process.env.NEXT_PUBLIC_CONTACT_EMAIL} for activation.`,
-    );
+    // toast.success(
+    //   `Account created. Please contact ${process.env.NEXT_PUBLIC_CONTACT_EMAIL} for activation.`,
+    // );
+
+    toast.success("Account registered successfully.");
   }
 
   const {

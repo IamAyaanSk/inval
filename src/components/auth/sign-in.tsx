@@ -12,7 +12,6 @@ import {
 import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { Controller, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { SignInInput, signInSchema } from "@/lib/validations/auth";
@@ -24,8 +23,6 @@ export function SignInForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
-  const router = useRouter();
-
   const form = useForm<SignInInput>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -48,7 +45,6 @@ export function SignInForm({
     }
 
     toast.success("Signed in successfully.");
-    router.push("/dashboard");
   }
 
   const {
